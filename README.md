@@ -37,3 +37,16 @@ This monitoring system aids conservationists by detecting animal species and log
    ```bash
    git clone https://github.com/yourusername/wildlife-conservation-monitoring.git
    cd wildlife-conservation-monitoring
+## Contribution
+
+1. Change to the main folder
+   ```bash
+   cd main_folder
+2. Create a new branch with the feature you want to create
+   ```bash
+   git checkout -b branch_name
+3. Make your contributions and then make a pull request
+``` bash
+git add .
+git commit -m "edit:your_name_contribution"
+git push origin branch_name
