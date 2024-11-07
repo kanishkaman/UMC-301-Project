@@ -38,6 +38,7 @@ This monitoring system aids conservationists by detecting animal species and log
    git clone https://github.com/yourusername/wildlife-conservation-monitoring.git
    cd wildlife-conservation-monitoring
 ## Contribution
+Fork the repo and clone the forked repo to your local, and then follow the steps.
 
 1. Change to the main folder
    ```bash
