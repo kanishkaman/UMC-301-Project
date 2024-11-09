@@ -57,7 +57,7 @@ def plot_and_save_classification_label(image_path, label, output_dir="../runs/cl
 def run_pipeline(detection_model_path, classification_model_path, image_path):
  
     
-
+    
     image_path = validate_file_path(image_path, file_type="file")
     detection_model_path = validate_file_path(detection_model_path, file_type="file")
     classification_model_path = validate_file_path(classification_model_path, file_type="file")
