@@ -11,12 +11,13 @@ The dataset includes three data types: camera trap images, iNaturalist images.
 
 ### Camera trap images
 
-Camera trap images were selected from the [WCS Camera Traps](https://lila.science/datasets/wcscameratraps) dataset.  The training set contains 201,399 images from 323 locations, and the test set contains 60,029 images from 91 locations. These 414 locations are spread across the globe. A location ID (`location`) is given for each image, and in some special cases where two cameras were set up by ecologists at the same location, we have provided a `sub_location` identifier. Camera traps operate with a motion trigger and, after motion is detected, the camera will take a sequence of photos (from 1 to 10 images depending on the camera). We provide a `seq_id` for each sequence, and the competition task was to count the number of individuals across each test sequence.  Species-level annotations are provided for each training image (see `metadata/iwildcam2022_train_annotations.json`).  The dataset also includes count annotations on 1780 of the 36,292 train sequences (see `metadata/train_sequence_counts.csv`).
+Camera trap images were selected from the [WCS Camera Traps](https://lila.science/datasets/wcscameratraps) dataset.  The training set contains 201,399 images from 323 locations, and the test set contains 60,029 images from 91 locations. These 414 locations are spread across the globe. A location ID (`location`) is given for each image, and in some special cases where two cameras were set up by ecologists at the same location, we have provided a `sub_location` identifier. Camera traps operate with a motion trigger and, after motion is detected, the camera will take a sequence of photos (from 1 to 10 images depending on the camera). We provide a `seq_id` for each sequence, and the competition task was to count the number of individuals across each test sequence.  Species-level annotations are provided for each training image (see `metadata/iwildcam2022_train_annotations.json`).
 
 # Data Pre-Processing
-`main.ipynb` contains different function and methods used to extract the data from the provided annotations file. 
 
-The annotation file `training_annotations.json` has the following structure:
+`main.ipynb` contains different function and methods used to extract the data from the provided annotations file.
+
+The annotation file `metadata/iwildicam2022_train_annotations.json` has the following structure:
 ```json
 {
   "images" : [image],
@@ -49,3 +50,37 @@ annotation {
   "category_id" : int
 }
 ```
+The annotation file `` contains the detections in the images and the bounding boxes. For our purpose we only need the label for each image.
+
+```json
+{
+ "detection_categories": {
+  "1": "animal",
+  "2": "person",
+  "3": "vehicle"
+ },
+ "info": {
+  "detection_completion_time": "2022-03-03 08:19:19",
+  "format_version": "1.0"
+ },
+ "images": [
+  {
+   "file": "train/87aaf7d4-21bc-11ea-a13a-137349068a90.jpg",
+   "max_detection_conf": 0.999,
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.999,
+     "bbox": [
+      0.534,
+      0.464,
+      0.091,
+      0.249
+     ]
+    }
+   ]
+  }
+}
+}
+```
+
