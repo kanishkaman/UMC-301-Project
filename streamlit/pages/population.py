@@ -6,20 +6,16 @@ import matplotlib.pyplot as plt
 from io import BytesIO
 import tempfile
 import sys
-import folium
-from streamlit_folium import st_folium
-import requests
-import pandas as pd
-import plotly.express as px
 from datetime import datetime
 import altair as alt
+import plotly.express as px
+import requests
+import pandas as pd
 
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(ROOT_DIR)
 
-
-
-def render_species_distribution():
+def render_species_distribution(species_name):
     st.header("🗺️ Species Distribution Analysis")
     
     # Create tabs for different visualizations
@@ -27,7 +23,7 @@ def render_species_distribution():
 
     # Fetch data with loading indicator
     with st.spinner("Fetching species data..."):
-        species_name = 'panthera pardus'  # You can make this dynamic based on detected species
+        species_name = species_name # You can make this dynamic based on detected species
         iNaturalist_data = get_inaturalist_data(species_name)
         gbif_data = get_gbif_data(species_name)
 
@@ -39,8 +35,8 @@ def render_species_distribution():
         with col1:
             # Create and display map
             if iNaturalist_data or gbif_data:
-                map_obj = plot_sightings_map(iNaturalist_data, gbif_data)
-                st_folium(map_obj, width=700, height=500)
+                map_obj = plot_sightings_map_plotly(iNaturalist_data, gbif_data)
+                st.plotly_chart(map_obj, use_container_width=True)  # Use Plotly chart instead of folium
             else:
                 st.warning("No distribution data available for this species")
         
@@ -59,18 +55,12 @@ def render_species_distribution():
     with tab2:
         st.subheader("Sightings Timeline")
         
-        # Process dates for timeline
-        dates_data = process_dates(iNaturalist_data, gbif_data)
-        if dates_data:
-            fig = plot_timeline(dates_data)
-            st.plotly_chart(fig, use_container_width=True)
-        else:
-            st.warning("No timeline data available")
+        st.write("To Be Implemented")
 
     # Tab 3: Statistics
     with tab3:
         st.subheader("Sighting Statistics")
-        show_statistics(iNaturalist_data, gbif_data)
+        #show_statistics(iNaturalist_data, gbif_data)
 
 def get_inaturalist_data(species_name):
     """Fetch data from iNaturalist API"""
@@ -100,88 +90,118 @@ def get_gbif_data(species_name):
         st.error(f"Error fetching GBIF data: {str(e)}")
         return []
 
-def plot_sightings_map(iNaturalist_data, gbif_data):
-    """Create a Folium map with sightings data"""
-    m = folium.Map(location=[0, 0], zoom_start=2)
+def plot_sightings_map_plotly(iNaturalist_data, gbif_data):
+    """Create an interactive Plotly map with sightings data"""
     
-    # Plot iNaturalist data
+    # Prepare iNaturalist data
+    inat_data = []
     for obs in iNaturalist_data:
         if obs.get("geojson") and obs["geojson"].get("coordinates"):
             coords = obs["geojson"]["coordinates"]
-            folium.Marker(
-                location=[coords[1], coords[0]],
-                popup=obs.get("species_guess", "Unknown Species"),
-                icon=folium.Icon(color="green")
-            ).add_to(m)
+            inat_data.append({
+                'latitude': coords[1],
+                'longitude': coords[0],
+                'species': obs.get("species_guess", "Unknown Species"),
+                'source': 'iNaturalist',
+                'color': 'green'
+            })
     
-    # Plot GBIF data
+    # Prepare GBIF data
+    gbif_data_list = []
     for obs in gbif_data:
         if "decimalLatitude" in obs and "decimalLongitude" in obs:
-            folium.CircleMarker(
-                location=[obs["decimalLatitude"], obs["decimalLongitude"]],
-                radius=3,
-                color="blue",
-                fill=True,
-                fill_opacity=0.6
-            ).add_to(m)
-    
-    return m
-
-def process_dates(iNaturalist_data, gbif_data):
-    """Process dates from both data sources for timeline visualization"""
-    dates = []
-    
-    # Process iNaturalist dates
-    for obs in iNaturalist_data:
-        if obs.get("observed_on"):
-            dates.append({
-                'date': obs["observed_on"],
-                'source': 'iNaturalist'
+            gbif_data_list.append({
+                'latitude': obs["decimalLatitude"],
+                'longitude': obs["decimalLongitude"],
+                'species': 'Unknown Species',  # You may adjust this based on the data
+                'source': 'GBIF',
+                'color': 'blue'
             })
     
-    # Process GBIF dates
-    for obs in gbif_data:
-        if obs.get("eventDate"):
-            dates.append({
-                'date': obs["eventDate"].split('T')[0],
-                'source': 'GBIF'
-            })
+    # Combine iNaturalist and GBIF data
+    all_data = inat_data + gbif_data_list
+    df = pd.DataFrame(all_data)
     
-    return pd.DataFrame(dates)
+    # Create the map using Plotly Express
+    fig = px.scatter_geo(df,
+                         lat='latitude',
+                         lon='longitude',
+                         color='source',
+                         hover_name='species',
+                         color_discrete_map={'iNaturalist': 'green', 'GBIF': 'blue'},
+                         title='Species Distribution Map',
+                         template="plotly",
+                         opacity=0.6)
+    
+    fig.update_geos(
+        showland=True,
+        landcolor='white',
+        projection_type="natural earth"
+    )
+    
+    fig.update_layout(
+        geo=dict(showcoastlines=True, coastlinecolor="Black", projection_scale=5),
+        autosize=True,
+        height = 700,
+        width = 1000
+    )
 
-def plot_timeline(df):
-    """Create timeline visualization using Plotly"""
-    df['date'] = pd.to_datetime(df['date'])
-    df_grouped = df.groupby(['date', 'source']).size().reset_index(name='count')
-    
-    fig = px.line(df_grouped, x='date', y='count', color='source',
-                  title='Sightings Over Time',
-                  labels={'date': 'Date', 'count': 'Number of Sightings'},
-                  color_discrete_map={'iNaturalist': 'green', 'GBIF': 'blue'})
-    
     return fig
 
-def show_statistics(iNaturalist_data, gbif_data):
-    """Display statistical information about sightings"""
-    col1, col2 = st.columns(2)
+# def process_dates(iNaturalist_data, gbif_data):
+#     """Process dates from both data sources for timeline visualization"""
+#     dates = []
     
-    with col1:
-        st.markdown("### iNaturalist Statistics")
-        if iNaturalist_data:
-            countries = pd.DataFrame([
-                obs.get('place_guess', 'Unknown')
-                for obs in iNaturalist_data
-            ]).value_counts().head()
-            
-            st.bar_chart(countries)
+#     # Process iNaturalist dates
+#     for obs in iNaturalist_data:
+#         if obs.get("observed_on"):
+#             dates.append({
+#                 'date': obs["observed_on"],
+#                 'source': 'iNaturalist'
+#             })
     
-    with col2:
-        st.markdown("### GBIF Statistics")
-        if gbif_data:
-            countries = pd.DataFrame([
-                obs.get('country', 'Unknown')
-                for obs in gbif_data
-            ]).value_counts().head()
-            
-            st.bar_chart(countries)
+#     # Process GBIF dates
+#     for obs in gbif_data:
+#         if obs.get("eventDate"):
+#             dates.append({
+#                 'date': obs["eventDate"].split('T')[0],
+#                 'source': 'GBIF'
+#             })
+    
+#     return pd.DataFrame(dates)
 
+# def plot_timeline(df):
+#     """Create timeline visualization using Plotly"""
+#     df['date'] = pd.to_datetime(df['date'])
+#     df_grouped = df.groupby(['date', 'source']).size().reset_index(name='count')
+    
+#     fig = px.line(df_grouped, x='date', y='count', color='source',
+#                   title='Sightings Over Time',
+#                   labels={'date': 'Date', 'count': 'Number of Sightings'},
+#                   color_discrete_map={'iNaturalist': 'green', 'GBIF': 'blue'})
+    
+#     return fig
+
+# def show_statistics(iNaturalist_data, gbif_data):
+#     """Display statistical information about sightings"""
+#     col1, col2 = st.columns(2)
+    
+#     with col1:
+#         st.markdown("### iNaturalist Statistics")
+#         if iNaturalist_data:
+#             countries = pd.DataFrame([
+#                 obs.get('place_guess', 'Unknown')
+#                 for obs in iNaturalist_data
+#             ]).value_counts().head()
+            
+#             st.bar_chart(countries)
+    
+#     with col2:
+#         st.markdown("### GBIF Statistics")
+#         if gbif_data:
+#             countries = pd.DataFrame([
+#                 obs.get('country', 'Unknown')
+#                 for obs in gbif_data
+#             ]).value_counts().head()
+            
+#             st.bar_chart(countries)

@@ -16,7 +16,7 @@ from species_detection.src.detect import run_pipeline
 logging.basicConfig(level=logging.INFO)
 # Streamlit UI
 
-#from pages.population import render_species_distribution
+from pages.population import render_species_distribution
 
 
 def get_species_info(label):
@@ -165,7 +165,7 @@ def main():
         st.markdown("---")
         page = st.radio(
             "Navigation",
-            ["Species Classification", "Population Trend", "Habitat Mapping"],
+            ["Species Classification", "Habitat Mapping"],
             index=0
         )
         st.markdown("---")
@@ -175,21 +175,7 @@ def main():
     # Load models
     detection_model_path = "../model/yolov8n.pt"
     classification_model_path = "../model/wildlife.pt"
-
-    if page == "Population Trend":
-       st.write("hello")
-       #render_species_distribution()
-
-    elif page == "Habitat Mapping":
-        st.header("🗺️ Habitat Mapping")
-        st.markdown("""
-            ### Coming Soon:
-            - Interactive habitat maps
-            - Migration patterns
-            - Environmental analysis
-        """)
-
-    elif page == "Species Classification":
+    if page == "Species Classification":
         st.header("🔍 Species Classification")
         
         # Create two columns
@@ -287,5 +273,8 @@ def main():
                         st.markdown("### Interesting Facts")
                         facts = parsed_info.get('interesting_facts', 'Information not available')
                         st.markdown(facts)
+    if  page == "Habitat Mapping":
+        species_name = st.text_input("Enter Species Name")
+        render_species_distribution(species_name)
 if __name__ == "__main__":
     main()
