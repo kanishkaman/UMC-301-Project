@@ -166,7 +166,7 @@ def main():
         st.markdown("---")
         page = st.radio(
             "Navigation",
-            ["Species Classification", "Population Trend", "Habitat Mapping", "Animal Re-identification"],
+            ["Species Classification", "Habitat Mapping", "Animal Re-identification"],
             index=0
         )
         st.markdown("---")
@@ -178,20 +178,7 @@ def main():
     classification_model_path = "../model/wildlife.pt"
     reidentification_model_path = "../model/zebra_siamese.pth"
 
-    if page == "Population Trend":
-       st.write("hello")
-       #render_species_distribution()
-
-    elif page == "Habitat Mapping":
-        st.header("🗺️ Habitat Mapping")
-        st.markdown("""
-            ### Coming Soon:
-            - Interactive habitat maps
-            - Migration patterns
-            - Environmental analysis
-        """)
-
-    elif page == "Species Classification":
+    if page == "Species Classification":
         st.header("🔍 Species Classification")
         
         # Create two columns
