@@ -11,6 +11,7 @@ ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(ROOT_DIR)
 from species_detection.langchain.lang import chain
 from species_detection.src.detect import run_pipeline
+from animal_reidentification.src.detect import run_pipeline_reidentification
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -165,7 +166,7 @@ def main():
         st.markdown("---")
         page = st.radio(
             "Navigation",
-            ["Species Classification", "Habitat Mapping"],
+            ["Species Classification", "Population Trend", "Habitat Mapping", "Animal Re-identification"],
             index=0
         )
         st.markdown("---")
@@ -175,7 +176,22 @@ def main():
     # Load models
     detection_model_path = "../model/yolov8n.pt"
     classification_model_path = "../model/wildlife.pt"
-    if page == "Species Classification":
+    reidentification_model_path = "../model/zebra_siamese.pth"
+
+    if page == "Population Trend":
+       st.write("hello")
+       #render_species_distribution()
+
+    elif page == "Habitat Mapping":
+        st.header("🗺️ Habitat Mapping")
+        st.markdown("""
+            ### Coming Soon:
+            - Interactive habitat maps
+            - Migration patterns
+            - Environmental analysis
+        """)
+
+    elif page == "Species Classification":
         st.header("🔍 Species Classification")
         
         # Create two columns
@@ -195,7 +211,7 @@ def main():
                     f.write(uploaded_image.getbuffer())
                 
                 # Show the uploaded image
-                st.image(uploaded_image, caption="Uploaded Image", use_column_width=True)
+                st.image(uploaded_image, caption="Uploaded Image", use_container_width=True)
 
                 if st.button("🔎 Analyze Image"):
                     # Process image with loading animation
@@ -207,7 +223,7 @@ def main():
                         )
                     if buf:
                         # Show results
-                        st.image(buf, caption="Analyzed Image", use_column_width=True)
+                        st.image(buf, caption="Analyzed Image", use_container_width=True)
                         
                         with col2:
                             # Display classification results in a neat box
