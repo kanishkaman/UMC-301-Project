@@ -17,6 +17,8 @@ from animal_reidentification.src.detect import run_pipeline_reidentification
 logging.basicConfig(level=logging.INFO)
 # Streamlit UI
 
+#from pages.population import render_species_distribution
+
 
 def get_species_info(label):
     # Modify the prompt to get structured output
@@ -124,6 +126,7 @@ def parse_species_info(info_text):
         if section != 'interesting_facts':
             sections[section]['description'] = sections[section]['description'].strip()
     
+    print(f'Sections: {sections}\n')
     return sections
 
 
@@ -176,17 +179,8 @@ def main():
     reidentification_model_path = "../model/zebra_siamese.pth"
 
     if page == "Population Trend":
-        st.header("📈 Population Trend Analysis")
-        col1, col2 = st.columns(2)
-        with col1:
-            st.markdown("""
-                ### Features Coming Soon:
-                - Historical population data
-                - Trend visualization
-                - Species distribution maps
-            """)
-        with col2:
-            st.image("placeholder_graph.png", caption="Sample visualization")
+       st.write("hello")
+       #render_species_distribution()
 
     elif page == "Habitat Mapping":
         st.header("🗺️ Habitat Mapping")
@@ -263,98 +257,36 @@ def main():
                     
                     with tab1:
                         st.markdown("### Habitat")
-                        st.markdown(parsed_info.get('habitat', 'Information not available'))
+                        habitat = parsed_info.get('habitat', 'Information not available')
+                        st.markdown(habitat['description'])
                         
                     with tab2:
                         st.markdown("### Physical Characteristics")
-                        st.markdown(parsed_info.get('physical_characteristics', 'Information not available'))
+                        physical = parsed_info.get('physical_characteristics', 'Information not available')
+                        print(physical)
+                        st.markdown(physical['description'])
                         
                     with tab3:
                         st.markdown("### Behavior")
-                        st.markdown(parsed_info.get('behavior', 'Information not available'))
+                        behaviour = parsed_info.get('behavior', 'Information not available')
+                        st.markdown(behaviour['description'])
                         
                     with tab4:
                         st.markdown("### Conservation Status")
                         conservation_info = parsed_info.get('conservation', 'Information not available')
                         # Add conservation status indicator
-                        print(conservation_info)
                         if 'endangered' in conservation_info['description'].lower():
                             st.error("⚠️ Endangered Species")
                         elif 'vulnerable' in conservation_info['description'].lower():
                             st.warning("⚡ Vulnerable Species")
+                        elif 'near threatened' in conservation_info['description'].lower():
+                            st.warning("⚡ Near Threatened Species")
                         elif 'least concern' in conservation_info['description'].lower():
                             st.success("✅ Least Concern")
-                        st.markdown(conservation_info)
+                        st.markdown(conservation_info['description'])
                         
                     with tab5:
                         st.markdown("### Interesting Facts")
                         facts = parsed_info.get('interesting_facts', 'Information not available')
-                        # Split facts into bullets if possible
-                        if facts != 'Information not available':
-                            facts_list = facts.split('\n')
-                            for fact in facts_list:
-                                if fact.strip():
-                                    st.markdown(f"• {fact.strip()}")
-                        else:
-                            st.markdown(facts)
-
-    elif page == "Animal Re-identification":
-        st.header("🔍 Animal Re-Identification")
-        
-        # Create two columns
-        col1, col2 = st.columns([3, 2])
-        
-        with col1:
-            uploaded_image = st.file_uploader(
-                "Upload an image of zebra",
-                type=["jpg"],
-                help="Supported formats: JPG"
-            )
-
-            if uploaded_image:
-                # Save the uploaded image
-                temp_image_path = os.path.join(tempfile.gettempdir(), uploaded_image.name)
-                with open(temp_image_path, "wb") as f:
-                    f.write(uploaded_image.getbuffer())
-                
-                # Show the uploaded image
-                st.image(uploaded_image, caption="Uploaded Image", use_container_width=True)
-
-                if st.button("🔎 Analyze Image"):
-                    # Process image with loading animation
-                    with st.spinner("Analyzing image..."):
-                        buf, label, similarity = run_pipeline_reidentification(
-                            detection_model_path,
-                            reidentification_model_path,
-                            temp_image_path,
-                            "../animal_reidentification/zebra_classes"
-                        )
-                    if buf:
-                        # Show results
-                        st.image(buf, caption="Analyzed Image", use_container_width=True)
-                        
-                        with col2:
-                            # Display classification results in a neat box
-                            st.markdown("### Analysis Results")
-                            with st.container():
-                                if similarity < 0.7:
-                                    st.markdown(f"""
-                                        <div class="info-box">
-                                            <h4>Individual Identified:</h4>
-                                            <p style='font-size: 20px;'>Someone New!</p>
-                                            <h4>Similarity:</h4>
-                                            <p style='font-size: 20px;'>{similarity:.3f}%</p>
-                                        </div>
-                                    """, unsafe_allow_html=True)
-                                else:
-                                    st.markdown(f"""
-                                        <div class="info-box">
-                                            <h4>Individual Identified:</h4>
-                                            <p style='font-size: 20px;'>{label}</p>
-                                            <h4>Similarity:</h4>
-                                            <p style='font-size: 20px;'>{similarity:.3f}%</p>
-                                        </div>
-                                    """, unsafe_allow_html=True)
-
 if __name__ == "__main__":
     main()
