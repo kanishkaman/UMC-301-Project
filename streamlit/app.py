@@ -166,7 +166,7 @@ def main():
         st.markdown("---")
         page = st.radio(
             "Navigation",
-            ["Species Classification", "Habitat Mapping", "Animal Re-identification"],
+            ["Species Classification", "Habitat Mapping", "Animal Re-Identification"],
             index=0
         )
         st.markdown("---")
@@ -276,6 +276,65 @@ def main():
                         st.markdown("### Interesting Facts")
                         facts = parsed_info.get('interesting_facts', 'Information not available')
                         st.markdown(facts)
+
+    if page == "Animal Re-Identification":
+        st.header("🔍 Animal Re-Identification")
+        
+        # Create two columns
+        col1, col2 = st.columns([3, 2])
+        
+        with col1:
+            uploaded_image = st.file_uploader(
+                "Upload an image of wildlife",
+                type=["jpg"],
+                help="Supported formats: JPG"
+            )
+
+            if uploaded_image:
+                # Save the uploaded image
+                temp_image_path = os.path.join(tempfile.gettempdir(), uploaded_image.name)
+                with open(temp_image_path, "wb") as f:
+                    f.write(uploaded_image.getbuffer())
+                
+                # Show the uploaded image
+                st.image(uploaded_image, caption="Uploaded Image", use_container_width=True)
+
+                if st.button("🔎 Analyze Image"):
+                    # Process image with loading animation
+                    with st.spinner("Analyzing image..."):
+                        buf, label, similarity = run_pipeline_reidentification(
+                            detection_model_path,
+                            reidentification_model_path,
+                            temp_image_path,
+                            "../animal_reidentification/zebra_classes"
+                        )
+                    if buf:
+                        # Show results
+                        st.image(buf, caption="Analyzed Image", use_container_width=True)
+                        
+                        with col2:
+                            # Display classification results in a neat box
+                            st.markdown("### Analysis Results")
+                            with st.container():
+                                if similarity < 0.7:
+                                    st.markdown(f"""
+                                        <div class="info-box">
+                                            <h4>Individual Identified:</h4>
+                                            <p style='font-size: 20px;'>Someone New !</p>
+                                            <h4>Confidence:</h4>
+                                            <p style='font-size: 20px;'>{similarity:.2f}</p>
+                                        </div>
+                                    """, unsafe_allow_html=True)
+                                else:
+                                    st.markdown(f"""
+                                        <div class="info-box">
+                                            <h4>Individual Identified:</h4>
+                                            <p style='font-size: 20px;'>{label}</p>
+                                            <h4>Confidence:</h4>
+                                            <p style='font-size: 20px;'>{similarity:.2f}</p>
+                                        </div>
+                                    """, unsafe_allow_html=True)
+
     if  page == "Habitat Mapping":
         species_name = st.text_input("Enter Species Name")
         render_species_distribution(species_name)
