@@ -16,6 +16,8 @@ from species_detection.src.detect import run_pipeline
 logging.basicConfig(level=logging.INFO)
 # Streamlit UI
 
+from pages.population import render_species_distribution
+
 
 def get_species_info(label):
     # Modify the prompt to get structured output
@@ -123,6 +125,7 @@ def parse_species_info(info_text):
         if section != 'interesting_facts':
             sections[section]['description'] = sections[section]['description'].strip()
     
+    print(f'Sections: {sections}\n')
     return sections
 
 
@@ -174,17 +177,8 @@ def main():
     classification_model_path = "../model/wildlife.pt"
 
     if page == "Population Trend":
-        st.header("📈 Population Trend Analysis")
-        col1, col2 = st.columns(2)
-        with col1:
-            st.markdown("""
-                ### Features Coming Soon:
-                - Historical population data
-                - Trend visualization
-                - Species distribution maps
-            """)
-        with col2:
-            st.image("placeholder_graph.png", caption="Sample visualization")
+       st.write("hello")
+       render_species_distribution()
 
     elif page == "Habitat Mapping":
         st.header("🗺️ Habitat Mapping")
@@ -261,39 +255,37 @@ def main():
                     
                     with tab1:
                         st.markdown("### Habitat")
-                        st.markdown(parsed_info.get('habitat', 'Information not available'))
+                        habitat = parsed_info.get('habitat', 'Information not available')
+                        st.markdown(habitat['description'])
                         
                     with tab2:
                         st.markdown("### Physical Characteristics")
-                        st.markdown(parsed_info.get('physical_characteristics', 'Information not available'))
+                        physical = parsed_info.get('physical_characteristics', 'Information not available')
+                        print(physical)
+                        st.markdown(physical['description'])
                         
                     with tab3:
                         st.markdown("### Behavior")
-                        st.markdown(parsed_info.get('behavior', 'Information not available'))
+                        behaviour = parsed_info.get('behavior', 'Information not available')
+                        st.markdown(behaviour['description'])
                         
                     with tab4:
                         st.markdown("### Conservation Status")
                         conservation_info = parsed_info.get('conservation', 'Information not available')
                         # Add conservation status indicator
-                        print(conservation_info)
                         if 'endangered' in conservation_info['description'].lower():
                             st.error("⚠️ Endangered Species")
                         elif 'vulnerable' in conservation_info['description'].lower():
                             st.warning("⚡ Vulnerable Species")
+                        elif 'near threatened' in conservation_info['description'].lower():
+                            st.warning("⚡ Near Threatened Species")
                         elif 'least concern' in conservation_info['description'].lower():
                             st.success("✅ Least Concern")
-                        st.markdown(conservation_info)
+                        st.markdown(conservation_info['description'])
                         
                     with tab5:
                         st.markdown("### Interesting Facts")
                         facts = parsed_info.get('interesting_facts', 'Information not available')
-                        # Split facts into bullets if possible
-                        if facts != 'Information not available':
-                            facts_list = facts.split('\n')
-                            for fact in facts_list:
-                                if fact.strip():
-                                    st.markdown(f"• {fact.strip()}")
-                        else:
-                            st.markdown(facts)
+                        st.markdown(facts)
 if __name__ == "__main__":
     main()
