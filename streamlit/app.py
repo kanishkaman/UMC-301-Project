@@ -16,7 +16,7 @@ from species_detection.src.detect import run_pipeline
 logging.basicConfig(level=logging.INFO)
 # Streamlit UI
 
-from pages.population import render_species_distribution
+#from pages.population import render_species_distribution
 
 
 def get_species_info(label):
@@ -178,7 +178,7 @@ def main():
 
     if page == "Population Trend":
        st.write("hello")
-       render_species_distribution()
+       #render_species_distribution()
 
     elif page == "Habitat Mapping":
         st.header("🗺️ Habitat Mapping")
