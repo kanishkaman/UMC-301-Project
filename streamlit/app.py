@@ -11,6 +11,7 @@ ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(ROOT_DIR)
 from species_detection.langchain.lang import chain
 from species_detection.src.detect import run_pipeline
+from animal_reidentification.src.detect import run_pipeline_reidentification
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -162,7 +163,7 @@ def main():
         st.markdown("---")
         page = st.radio(
             "Navigation",
-            ["Species Classification", "Population Trend", "Habitat Mapping"],
+            ["Species Classification", "Population Trend", "Habitat Mapping", "Animal Re-identification"],
             index=0
         )
         st.markdown("---")
@@ -172,6 +173,7 @@ def main():
     # Load models
     detection_model_path = "../model/yolov8n.pt"
     classification_model_path = "../model/wildlife.pt"
+    reidentification_model_path = "../model/zebra_siamese.pth"
 
     if page == "Population Trend":
         st.header("📈 Population Trend Analysis")
@@ -215,7 +217,7 @@ def main():
                     f.write(uploaded_image.getbuffer())
                 
                 # Show the uploaded image
-                st.image(uploaded_image, caption="Uploaded Image", use_column_width=True)
+                st.image(uploaded_image, caption="Uploaded Image", use_container_width=True)
 
                 if st.button("🔎 Analyze Image"):
                     # Process image with loading animation
@@ -227,7 +229,7 @@ def main():
                         )
                     if buf:
                         # Show results
-                        st.image(buf, caption="Analyzed Image", use_column_width=True)
+                        st.image(buf, caption="Analyzed Image", use_container_width=True)
                         
                         with col2:
                             # Display classification results in a neat box
@@ -295,5 +297,64 @@ def main():
                                     st.markdown(f"• {fact.strip()}")
                         else:
                             st.markdown(facts)
+
+    elif page == "Animal Re-identification":
+        st.header("🔍 Animal Re-Identification")
+        
+        # Create two columns
+        col1, col2 = st.columns([3, 2])
+        
+        with col1:
+            uploaded_image = st.file_uploader(
+                "Upload an image of zebra",
+                type=["jpg"],
+                help="Supported formats: JPG"
+            )
+
+            if uploaded_image:
+                # Save the uploaded image
+                temp_image_path = os.path.join(tempfile.gettempdir(), uploaded_image.name)
+                with open(temp_image_path, "wb") as f:
+                    f.write(uploaded_image.getbuffer())
+                
+                # Show the uploaded image
+                st.image(uploaded_image, caption="Uploaded Image", use_container_width=True)
+
+                if st.button("🔎 Analyze Image"):
+                    # Process image with loading animation
+                    with st.spinner("Analyzing image..."):
+                        buf, label, similarity = run_pipeline_reidentification(
+                            detection_model_path,
+                            reidentification_model_path,
+                            temp_image_path,
+                            "../animal_reidentification/zebra_classes"
+                        )
+                    if buf:
+                        # Show results
+                        st.image(buf, caption="Analyzed Image", use_container_width=True)
+                        
+                        with col2:
+                            # Display classification results in a neat box
+                            st.markdown("### Analysis Results")
+                            with st.container():
+                                if similarity < 0.7:
+                                    st.markdown(f"""
+                                        <div class="info-box">
+                                            <h4>Individual Identified:</h4>
+                                            <p style='font-size: 20px;'>Someone New!</p>
+                                            <h4>Similarity:</h4>
+                                            <p style='font-size: 20px;'>{similarity:.3f}%</p>
+                                        </div>
+                                    """, unsafe_allow_html=True)
+                                else:
+                                    st.markdown(f"""
+                                        <div class="info-box">
+                                            <h4>Individual Identified:</h4>
+                                            <p style='font-size: 20px;'>{label}</p>
+                                            <h4>Similarity:</h4>
+                                            <p style='font-size: 20px;'>{similarity:.3f}%</p>
+                                        </div>
+                                    """, unsafe_allow_html=True)
+
 if __name__ == "__main__":
     main()
