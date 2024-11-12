@@ -164,7 +164,7 @@ def main():
 
     # Sidebar with better organization
     with st.sidebar:
-        st.image("./assets/logo.png", width=100)  # Add your logo
+        #st.image("./assets/logo.png", width=100)  # Add your logo
         st.markdown("---")
         page = st.radio(
             "Navigation",
