@@ -1,7 +1,7 @@
 # Core packages
 streamlit>=1.24.0
 torch>=2.0.0
-ultralytics=8.3.29
+ultralytics==8.3.29
 opencv-python
 
 # Data handling & processing
