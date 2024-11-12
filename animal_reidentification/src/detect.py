@@ -1,6 +1,5 @@
 import os
 import logging
-import argparse
 import matplotlib.pyplot as plt
 from PIL import Image
 from ultralytics import YOLO
@@ -55,9 +54,6 @@ def run_pipeline_reidentification(detection_model_path, reidentification_model_p
         top_class_similarity = classification_results[1]
 
         logging.info(f"Top classification label: {top_class_label} with confidence {top_class_similarity:.4f}")
-
-        # # Plot and save the image with classification result
-        # plot_and_save_classification_label(image, label=f"{top_class_label} ({top_class_conf:.2f})")
 
         # Return the image, label, and confidence
         return image, top_class_label, top_class_similarity

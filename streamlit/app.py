@@ -7,11 +7,13 @@ from io import BytesIO
 import tempfile
 import sys
 
+
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(ROOT_DIR)
-from species_detection.langchain.lang import chain
-from species_detection.src.detect import run_pipeline
+
+from species_detection_module.src.detect import run_pipeline
 from animal_reidentification.src.detect import run_pipeline_reidentification
+from species_detection_module.langchain.lang import groq_chain
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -42,7 +44,7 @@ def get_species_info(label):
     """
     
     # Get response from LLM
-    response = chain.invoke({"question": structured_prompt})
+    response = groq_chain.invoke({"question": structured_prompt})
     return response
 
 
@@ -158,7 +160,7 @@ def main():
     """, unsafe_allow_html=True)
 
     # Main title with custom styling
-    st.markdown('<p class="big-font">Wildlife Analysis Platform</p>', unsafe_allow_html=True)
+    st.markdown('<p class="big-font">WILDLIFE CONSERVATION MONITORING SYSTEM</p>', unsafe_allow_html=True)
 
     # Sidebar with better organization
     with st.sidebar:
@@ -171,7 +173,7 @@ def main():
         )
         st.markdown("---")
         st.markdown("### About")
-        st.markdown("This platform helps analyze wildlife using AI.")
+        st.markdown("This application is a wildlife analysis platform that uses deep learning models to classify species, re-identify animals, and map their habitats.")
 
     # Load models
     detection_model_path = "../model/yolov8n.pt"
@@ -210,8 +212,6 @@ def main():
                         )
                     if buf:
                         # Show results
-                        st.image(buf, caption="Analyzed Image", use_container_width=True)
-                        
                         with col2:
                             # Display classification results in a neat box
                             st.markdown("### Analysis Results")
@@ -228,18 +228,14 @@ def main():
                             # Get species information with loading animation
                             with st.spinner("Fetching species information..."):
                                 species_info = get_species_info(label)
-
-                                st.write(species_info)
-                                print(species_info)
                                 parsed_info = parse_species_info(species_info)
                     
                                 # Display in organized tabs
-                                tab1, tab2, tab3, tab4, tab5 = st.tabs([
+                                tab1, tab2, tab3, tab4 = st.tabs([
                                     "🌍 Habitat", 
                                     "👀 Physical Characteristics", 
                                     "🦁 Behavior", 
                                     "🌿 Conservation", 
-                                    "⭐ Fun Facts"
                                 ])
                     
                     with tab1:
@@ -272,10 +268,7 @@ def main():
                             st.success("✅ Least Concern")
                         st.markdown(conservation_info['description'])
                         
-                    with tab5:
-                        st.markdown("### Interesting Facts")
-                        facts = parsed_info.get('interesting_facts', 'Information not available')
-                        st.markdown(facts)
+                    
 
     if page == "Animal Re-Identification":
         st.header("🔍 Animal Re-Identification")
@@ -337,6 +330,7 @@ def main():
 
     if  page == "Habitat Mapping":
         species_name = st.text_input("Enter Species Name")
-        render_species_distribution(species_name)
+        if species_name:
+            render_species_distribution(species_name)
 if __name__ == "__main__":
     main()
