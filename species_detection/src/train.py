@@ -23,16 +23,18 @@ def validate_path(path):
 def main():
     # Define the argparse arguments with validation
     parser = argparse.ArgumentParser(description='Train the YOLO model on a dataset')
+    parser.add_argument('--weights', type=validate_path, default='yolo11n-cls.pt', help='Path to the weights file (default: yolo11n-cls.pt)')
     parser.add_argument('--data', type=validate_path, required=True, help='Path to the dataset (required)')
     parser.add_argument('--epochs', type=check_positive, default=10, help='Number of epochs (default: 50)')
     parser.add_argument('--batch', type=check_positive, default=16, help='Batch size (default: 16)')
     args = parser.parse_args()
 
     try:
-        model = YOLO('yolo11n-cls.pt')  # Load model
+        model = YOLO(args.weights)  # Load model
         
         # Start training with specified parameters
         logging.info("Starting training with the following parameters:")
+        logging.info(f"Weights path: {args.weights}")
         logging.info(f"Dataset path: {args.data}")
         logging.info(f"Epochs: {args.epochs}")
         logging.info(f"Batch size: {args.batch}")

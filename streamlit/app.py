@@ -15,8 +15,8 @@ from animal_reidentification.src.detect import run_pipeline_reidentification
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
-# Streamlit UI
 
+# Streamlit UI
 from pages.population import render_species_distribution
 
 
@@ -162,7 +162,7 @@ def main():
 
     # Sidebar with better organization
     with st.sidebar:
-        st.image("logo.png", width=100)  # Add your logo
+        st.image("./assets/logo.png", width=100)  # Add your logo
         st.markdown("---")
         page = st.radio(
             "Navigation",
