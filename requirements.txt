@@ -2,6 +2,7 @@
 streamlit>=1.24.0
 torch>=2.0.0
 ultralytics>=8.0.0
+opencv-python
 
 # Data handling & processing
 pandas>=1.5.3
