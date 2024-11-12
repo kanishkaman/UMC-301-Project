@@ -8,51 +8,7 @@ from ultralytics import YOLO
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 
-def validate_file_path(path, file_type="file"):
-    if not os.path.exists(path):
-        raise FileNotFoundError(f"{file_type.capitalize()} path '{path}' does not exist.")
-    if file_type == "file" and not os.path.isfile(path):
-        raise ValueError(f"{file_type.capitalize()} path '{path}' is not a valid file.")
-    return path
-
-def validate_image_file(image_path):
-    try:
-        with Image.open(image_path) as img:
-            img.verify()
-    except (IOError, SyntaxError) as e:
-        raise ValueError(f"Invalid image file '{image_path}'. Error: {e}")
-
-def plot_and_save_classification_label(image, label, output_dir="../runs/classify/exp"):
-    # Set up matplotlib figure and axis
-    fig, ax = plt.subplots(1)
-    ax.imshow(image)
-
-    # Annotate the image with classification label
-    ax.text(
-        10, 20, label, color='red', fontsize=16,
-        bbox=dict(facecolor='white', alpha=0.5, edgecolor='none')
-    )
-
-    # Hide axes
-    plt.axis('off')
-
-    # Ensure output directory exists
-    os.makedirs(output_dir, exist_ok=True)
-
-    # Save the figure
-    output_path = os.path.join(output_dir, "classified_" + os.path.basename(image.filename))
-    fig.savefig(output_path, bbox_inches='tight', pad_inches=0)
-    logging.info(f"Image saved to '{output_path}' with classification label: {label}")
-    plt.show()
-
-
 def run_pipeline(detection_model_path, classification_model_path, image_path):
-
-    image_path = validate_file_path(image_path, file_type="file")
-    detection_model_path = validate_file_path(detection_model_path, file_type="file")
-    classification_model_path = validate_file_path(classification_model_path, file_type="file")
-    validate_image_file(image_path)
-    
     detection_model = YOLO(detection_model_path)
     classification_model = YOLO(classification_model_path)
 
@@ -76,8 +32,8 @@ def run_pipeline(detection_model_path, classification_model_path, image_path):
 
         logging.info(f"Top classification label: {top_class_label} with confidence {top_class_conf:.2f}")
 
-        # Plot and save the image with classification result
-        plot_and_save_classification_label(image, label=f"{top_class_label} ({top_class_conf:.2f})")
+        # # Plot and save the image with classification result
+        # plot_and_save_classification_label(image, label=f"{top_class_label} ({top_class_conf:.2f})")
 
         # Return the image, label, and confidence
         return image, top_class_label, top_class_conf
