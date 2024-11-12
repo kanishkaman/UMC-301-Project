@@ -175,9 +175,9 @@ def main():
         st.markdown("This application is a wildlife analysis platform that uses deep learning models to classify species, re-identify animals, and map their habitats.")
 
     # Load models
-    detection_model_path = "../model/yolov8n.pt"
-    classification_model_path = "../model/wildlife.pt"
-    reidentification_model_path = "../model/zebra_siamese.pth"
+    detection_model_path = "./model/yolov8n.pt"
+    classification_model_path = "./model/wildlife.pt"
+    reidentification_model_path = "./model/zebra_siamese.pth"
 
     if page == "Species Classification":
         st.header("🔍 Species Classification")
@@ -298,7 +298,7 @@ def main():
                             detection_model_path,
                             reidentification_model_path,
                             temp_image_path,
-                            "../animal_reidentification/zebra_classes"
+                            "./animal_reidentification/zebra_classes"
                         )
                     if buf:
                         # Show results
