@@ -18,6 +18,32 @@ This monitoring system aids conservationists by detecting animal species and dis
 - **Species Classification**: Identifies species using deep learning.
 - **Individual Animal Re-Identification**: Detects and records animal behaviors.
 
+## Repository Structure
+
+```plaintext
+UMC-301-Project/
+├── app.py
+├── model/
+│   ├── wildlife.pt # Custom trained model weights (YOLOv11)
+│   └── yolov8n.pt  # Pre-trained weights for object detection
+├── species_detection_module/
+│   ├── langchain/
+│   │   ├── lang.py # Driver code for Groq LLM
+│   └── src/
+│       ├── train.py # Code for training the YOLO Model
+│       ├── detect.py # Code for inferencing on a sample image
+│       ├── predict.py 
+├── data_retrieval/
+│   # Contains data visualization and data retrieval techniques
+├── data_preprocessing/
+|   # Notebooks for data preprocessing on iWildCam-2022 dataset
+├── animal_reidentification/
+|    # Code for Siamese Neural Network Implementation
+├── requirements.txt
+├── Dockerfile
+└── README.md
+
+
 ## Tech Stack
 
 - **Languages**: Python
