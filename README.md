@@ -8,6 +8,7 @@ A computer vision-based system to support wildlife conservation by classifying a
 - [Features](#features)
 - [Tech Stack](#tech-stack)
 - [Setup](#setup)
+- [Contributions]
 
 ## Introduction
 
@@ -73,3 +74,10 @@ UMC-301-Project/
    docker run -p 8501:8501 my-streamlit-app
    ```
    You can view the website live at `localhost:8501`
+## **Individual Contributions**
+   Each folder contains a specific README.md file which explains the work done in the particular folder. Specific contributions have been listed below.
+   ### a. Aayush Patil - 
+   ### b. Bhanu Kumar - Contributed to the data preprocessing folder
+   ### c. Kanishk Aman - Contributed to data retrieval and langchain folder
+   ### d. Vansh Dhar - Contributed to the streamlit UI, training YOLO model
+   ### e. Pinakin Choudhary - 
