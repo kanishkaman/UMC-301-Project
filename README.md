@@ -22,8 +22,8 @@ This monitoring system aids conservationists by detecting animal species and dis
 
 - **Languages**: Python
 - **ML Frameworks**: PyTorch / TensorFlow
-- **Computer Vision**: OpenCV
-- **Models**: YOLOv11-cls
+- **LLM API**: Groq API
+- **Models**: YOLOv11
 - **Deployment**: Streamlit-Cloud
 - **Visualization**: Matplotlib, folium
 
