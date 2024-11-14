@@ -2,6 +2,8 @@
 
 This part of the project aims to use the identified wildlife species from our model to retrieve additional information, and visualize global sightings and few other plots. It utilizes the custom-trained YOLOv11 for species detection, Wikipedia API for species information, Generative AI for enhanced details, and GBIF/iNaturalist API for species occurrence data. The project also includes interactive mapping capabilities for visualizing species distribution on a world map.
 
+> **Note**: These final files are intended for implementation in Streamlit, with some modifications in the information retrieval process. In the original Streamlit code, LangChain with Ollama was used instead of the Gemini API, due to module/package compatibility issues.
+
 ## Table of Contents
 
 - [Installation](#installation)
@@ -18,7 +20,7 @@ This part of the project aims to use the identified wildlife species from our mo
 
 3. **Data and Model Setup**:
     - Download the YOLOv11 weights file (`wildlife.pt`) and save it in the root directory.
-    - Ensure the Natural Earth shapefiles for countries (`ne_110m_admin_0_countries.shp`) are stored in the specified directory (`../kanishk_UMC301/`).
+    - Ensure the Natural Earth shapefiles for countries (`ne_110m_admin_0_countries.shp`) are stored in the specified directory (`../data_retrieval/ne_110m_admin_0_countries/`).
 
 ## Project Structure
 
@@ -66,6 +68,7 @@ This part of the project aims to use the identified wildlife species from our mo
    
 2. **Information Retrieval**:
    - Fetches species information from Wikipedia and enhances it using Gemini AI.
+   - In the Streamlit version, LangChain with Ollama is used instead.
    
 3. **Species Occurrence Data**:
    - Retrieves species occurrence data from GBIF/iNaturalist API and saves it to a CSV file.
