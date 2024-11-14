@@ -79,5 +79,5 @@ UMC-301-Project/
    ### a. Aayush Patil - 
    ### b. Bhanu Kumar - Contributed to the data preprocessing folder
    ### c. Kanishk Aman - Contributed to data retrieval and langchain folder
-   ### d. Vansh Dhar - Contributed to the streamlit UI, training YOLO model
+   ### d. Vansh Dhar - Contributed to the streamlit UI, training YOLO model and LLM integration
    ### e. Pinakin Choudhary - 
