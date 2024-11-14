@@ -9,6 +9,7 @@ from animal_reidentification.siamese_model.siamese import create_siamese_model, 
 import warnings
 warnings.filterwarnings("ignore")
 
+## Aayush Patil
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 
@@ -26,6 +27,7 @@ def validate_image_file(image_path):
     except (IOError, SyntaxError) as e:
         raise ValueError(f"Invalid image file '{image_path}'. Error: {e}")
 
+## Pinakin Choudhary
 def run_pipeline_reidentification(detection_model_path, reidentification_model_path, image_path, ref_dir):
 
     image_path = validate_file_path(image_path, file_type="file")

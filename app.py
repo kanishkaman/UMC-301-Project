@@ -268,7 +268,7 @@ def main():
                         st.markdown(conservation_info['description'])
                         
                     
-
+    ## Pinakin Choudhary
     if page == "Animal Re-Identification":
         st.header("🔍 Animal Re-Identification")
         

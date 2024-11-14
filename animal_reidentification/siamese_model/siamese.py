@@ -9,6 +9,8 @@ import numpy as np
 from PIL import Image
 import torchvision.transforms.functional as TF
 
+
+## Aayush Patil
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Turn off warnings
@@ -117,6 +119,8 @@ class SiameseDataset(ImageFolder):
     def __len__(self) -> int:
         return super().__len__()
     
+
+## Pinakin Choudhary
 import torch.nn as nn
 import torch.nn.functional as F
 from torchvision import models
@@ -416,6 +420,7 @@ def load_siamese_model(model: SiameseNetwork, model_path: str, device=device) ->
     return model
 
 
+## Aayush Patil
 import cv2
 import torch
 from ultralytics import YOLO
@@ -456,29 +461,7 @@ def crop_image(image_path, model_path):
         
         # Crop the image using the bounding box
         cropped_image = img[ymin:ymax, xmin:xmax]  # Crop the image within the bounding box
-        
-        # # Convert images from BGR to RGB (OpenCV loads images in BGR)
-        # img_with_bbox_rgb = cv2.cvtColor(img_with_bbox, cv2.COLOR_BGR2RGB)
-        # cropped_image_rgb = cv2.cvtColor(cropped_image, cv2.COLOR_BGR2RGB)
-        
-        # # Show images using matplotlib
-        # plt.figure(figsize=(10, 5))
 
-        # # Display the image with bounding box
-        # plt.subplot(1, 2, 1)
-        # plt.imshow(img_with_bbox_rgb)
-        # plt.title("Image with Bounding Box")
-        # plt.axis("off")
-        
-        # # Display the cropped image
-        # plt.subplot(1, 2, 2)
-        # plt.imshow(cropped_image_rgb)
-        # plt.title("Cropped Image")
-        # plt.axis("off")
-        
-        # plt.show()
-
-        # Save cropped image in place of the original image
         cv2.imwrite(image_path, cropped_image)
 
         return results, cropped_image
@@ -487,6 +470,7 @@ def crop_image(image_path, model_path):
         print("No bounding box detected.")
         return None, None
 
+## Pinakin Choudhary
 import os
 def predict_classification(image_path: str, model: SiameseNetwork, ref_dir: str, species="zebra") -> Any:
     """
