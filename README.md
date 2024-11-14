@@ -42,6 +42,7 @@ UMC-301-Project/
 ├── requirements.txt
 ├── Dockerfile
 └── README.md
+```
 
 
 ## Tech Stack
