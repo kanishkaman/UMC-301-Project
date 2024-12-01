@@ -76,7 +76,7 @@ UMC-301-Project/
    You can view the website live at `localhost:8501`
 ## **Individual Contributions**
    Each folder contains a specific README.md file which explains the work done in the particular folder. Specific contributions have been listed below.
-   ### a. Aayush Patil - 
+   ### a. Aayush Patil - Implemented the siamese network in pytorch for animal re-identification 
    ### b. Bhanu Kumar - Contributed to the data preprocessing folder
    ### c. Kanishk Aman - Contributed to data retrieval and langchain folder
    ### d. Vansh Dhar - Contributed to the streamlit UI, training YOLO model and LLM integration
