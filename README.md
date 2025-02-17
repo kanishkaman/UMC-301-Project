@@ -80,4 +80,4 @@ UMC-301-Project/
    ### b. Bhanu Kumar - Contributed to the data preprocessing folder
    ### c. Kanishk Aman - Contributed to data retrieval and langchain folder
    ### d. Vansh Dhar - Contributed to the streamlit UI, training YOLO model and LLM integration
-   ### e. Pinakin Choudhary - 
+   ### e. Pinakin Choudhary - Implementation and Training of Siamese network. Integrated this as a separate tab in StreamLit.
